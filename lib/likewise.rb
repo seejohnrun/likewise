@@ -2,6 +2,7 @@ module Likewise
 
   # structures
   autoload :LinkedList, 'likewise/structures/linked_list'
+  autoload :SortedSet, 'likewise/structures/sorted_set'
 
   # classes we need
   autoload :VERSION, 'likewise/version'

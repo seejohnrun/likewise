@@ -3,17 +3,11 @@ module Likewise
   # This is an implementation of a LinkedList sitting on top of a
   # Likewise data store.
   #
-  # This implementation memoized length on the head element for O(1)
+  # This implementation memoizes length on the head element for O(1)
   # performance on #length
   class LinkedList < Node
 
     include Collection
-
-    # Empty if the length is 0
-    # Complexity: O(1)
-    def empty?
-      length == 0
-    end
 
     # Add a link to the end of this structure that references this node
     # Complexity: O(N)

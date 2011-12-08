@@ -13,7 +13,7 @@ module Likewise
       end
     end
     
-    def self.create(data)
+    def self.create(data = {})
       node = new(data)
       node.save
     end
