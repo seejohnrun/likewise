@@ -4,6 +4,7 @@ module Likewise
   autoload :LinkedList, 'likewise/structures/linked_list'
 
   # classes we need
+  autoload :VERSION, 'likewise/version'
   autoload :Node, 'likewise/node'
 
   # by default, likewise will use a memory store
