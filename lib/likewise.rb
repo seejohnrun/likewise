@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Likewise
 
   # structures
@@ -9,26 +11,23 @@ module Likewise
   autoload :Collection, 'likewise/collection'
   autoload :Node, 'likewise/node'
 
+  # stores
+  module Store
+    autoload :Memory, 'likewise/store/memory'
+    autoload :Redis, 'likewise/store/redis'
+  end
+
   # by default, likewise will use a memory store
-  # TODO write this
   class << self
 
-    def get(id)
-      hash[id]
-    end
+    extend Forwardable
 
-    def set(id, value)
-      hash[id] = value
-    end
+    def_delegators :store, :get, :set, :clear
 
-    def clear
-      @hash = {}
-    end
+    attr_writer :store
 
-    private
-
-    def hash
-      @hash ||= {}
+    def store
+      @store ||= Store::Memory.new
     end
 
   end

@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Likewise::SortedSet do
 
+  before :each do
+    Likewise::clear
+  end
+
   it 'should start off empty' do
     list = Likewise::SortedSet.new
     list.should be_empty

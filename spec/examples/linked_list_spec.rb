@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Likewise::LinkedList do
 
+  before :each do
+    Likewise::clear
+  end
+
   it 'should start off empty' do
     list = Likewise::LinkedList.new
     list.should be_empty
