@@ -12,3 +12,15 @@ list.each do |node|
 	node[:some] # "data"
 end
 ```
+
+## SortedSet
+
+``` ruby
+set = Likewise::SortedSet.new
+node1 = Likewise::Node.create
+node2 = Likewise::Node.create
+set.increment node1
+set.increment node2
+set.increment node2
+set.to_a.should == [node2, node1]
+```
