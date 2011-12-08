@@ -1,15 +1,15 @@
-require 'redis'
+require 'dalli'
 
 module Likewise
 
   module Store
 
     # TODO make marshall confiruably swapped out for JSON
-    # A store for putting things into Redis
-    class Redis
+    # A store for putting things into Memcache
+    class Memcache
 
       def initialize(client = nil)
-        @client ||= ::Redis.new
+        @client ||= Dalli::Client.new('localhost:11211')
       end
 
       def set(key, value)
@@ -23,7 +23,7 @@ module Likewise
       end
 
       def clear
-        @client.flushdb
+        @client.flush
       end
 
     end

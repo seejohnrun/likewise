@@ -2,7 +2,9 @@
 
 At its base, Likewise is a set of data structure implementations designed to sit on top of a distributed Key/Value store.
 
-## LinkedList
+## Structures
+
+### LinkedList
 
 ``` ruby
 list = Likewise::LinkedList.new
@@ -13,7 +15,7 @@ list.each do |node|
 end
 ```
 
-## SortedSet
+### SortedSet
 
 ``` ruby
 set = Likewise::SortedSet.new
@@ -24,3 +26,17 @@ set.increment node2
 set.increment node2
 set.to_a.should == [node2, node1]
 ```
+
+## Storage
+
+### Memory
+
+Memory store stores all nodes in memory.  It is designed for testing, since Likewise isn't very useful for anywhere the problem can live in memory.
+
+It is the default, and you can explicitly set it with: `Likewise::store = Likewise::Store::Memory.new`
+
+### Memcache / Membase
+
+Store your data in Memcache (more preferably Membase).  This really hits at the intended purpose of the library, since we can grow these collections as large as we'd like.
+
+YOu can set it with: `Likewise::store = Likewise::Store::Memcache.new` which will take an optional argument which is a `Dalli` client already connected to the host you'd like.

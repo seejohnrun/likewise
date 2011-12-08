@@ -14,7 +14,7 @@ module Likewise
   # stores
   module Store
     autoload :Memory, 'likewise/store/memory'
-    autoload :Redis, 'likewise/store/redis'
+    autoload :Memcache, 'likewise/store/memcache'
   end
 
   # by default, likewise will use a memory store

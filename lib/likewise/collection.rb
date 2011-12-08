@@ -46,7 +46,7 @@ module Likewise
     # Complexity: O(N)
     def each_link(&block)
       next_id = self[:head_id]
-      while node = Likewise::Node.find(next_id)
+      while next_id && node = Likewise::Node.find(next_id)
         yield node
         next_id = node[:next_id]
       end

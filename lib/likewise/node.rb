@@ -44,7 +44,7 @@ module Likewise
     end
 
     def save
-      @id = id || UUID.new.generate
+      @id ||= UUID.new.generate
       Likewise::set(@id, @data)
       persisted!
       self
