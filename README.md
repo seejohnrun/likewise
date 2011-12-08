@@ -6,7 +6,7 @@ At its base, Likewise is a set of data structure implementations designed to sit
 
 ``` ruby
 list = Likewise::LinkedList.new
-list.add Likewise::Node.create('123', :some => 'data')
+list.add Likewise::Node.create(:some => 'data')
 list.length # 1
 list.each do |node|
 	node[:some] # "data"
