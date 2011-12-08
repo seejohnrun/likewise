@@ -16,24 +16,20 @@ module Likewise
       raise 'Node must be persisted!' unless node.persisted?
       # Traverse to the end
       last_link = nil
-      each do |link|
+      each_link do |link|
         last_link = link
       end
       # Create a new link
       # If there is no last node, make the link the head
       # Otherwise, throw the link at the end
-      link = Likewise::Node.new nil, :ref => node.id
-      link.save
+      link = Likewise::Node.create :ref_id => node.id
       if last_link.nil?
-        @head_id = link.id
-        save
+        self[:head_id] = link.id
       else
         last_link[:next_id] = link.id
-        last_link.save
       end
       # Increment our length, which is memoized
       self[:length] = (self[:length] || 0) + 1
-      save
     end
 
     # Compute the length by moving through the list
@@ -42,10 +38,28 @@ module Likewise
       self[:length] || 0
     end
 
-    # Go through and yield each link
+    # Convert the list into an Array
+    # Complexity: O(N)
+    def to_a
+      arr = []
+      each { |n| arr << n }
+      arr
+    end
+
+    # Yield each of the references nodes
     # Complexity: O(N)
     def each(&block)
-      next_id = @head_id
+      each_link do |link|
+        yield Likewise::Node.find(link[:ref_id])
+      end
+    end
+
+    private
+
+    # Go through and yield each link
+    # Complexity: O(N)
+    def each_link(&block)
+      next_id = self[:head_id]
       while node = Likewise::Node.find(next_id)
         yield node
         next_id = node[:next_id]
