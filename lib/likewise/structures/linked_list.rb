@@ -2,7 +2,12 @@ module Likewise
 
   # This is an implementation of a LinkedList sitting on top of a
   # Likewise data store.
+  #
+  # This implementation memoized length on the head element for O(1)
+  # performance on #length
   class LinkedList < Node
+
+    include Collection
 
     # Empty if the length is 0
     # Complexity: O(1)
@@ -44,27 +49,6 @@ module Likewise
       arr = []
       each { |n| arr << n }
       arr
-    end
-
-    # Yield each of the references nodes
-    # Complexity: O(N)
-    def each(&block)
-      each_link do |link|
-        yield Likewise::Node.find(link[:ref_id])
-      end
-    end
-
-    private
-
-    # Go through and yield each link
-    # Complexity: O(N)
-    def each_link(&block)
-      next_id = self[:head_id]
-      while node = Likewise::Node.find(next_id)
-        yield node
-        next_id = node[:next_id]
-      end
-      self
     end
 
   end

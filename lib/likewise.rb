@@ -5,6 +5,7 @@ module Likewise
 
   # classes we need
   autoload :VERSION, 'likewise/version'
+  autoload :Collection, 'likewise/collection'
   autoload :Node, 'likewise/node'
 
   # by default, likewise will use a memory store
