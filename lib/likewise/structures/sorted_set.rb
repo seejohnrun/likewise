@@ -9,60 +9,59 @@ module Likewise
 
     include Collection
 
+    # TODO memoize length and weight
+
     # All a member to the collection
     # If it is already in, increment its weight 
     def increment(node)
       raise 'Node must be persisted!' unless node.persisted?
-      # construct a new link
-      # TODO can be more efficient
-      link = delete(node)
-      if link
-        link[:weight] += 1
-      else
-        link = Likewise::Node.create :ref_id => node.id, :weight => 1
-      end
-      # Keep looking until we find one with weight less than 1
-      # Update the weight by one
+      # first find out where it is
       prev_link = nil
       the_link = nil
       each_link do |alink|
-        # This is the place we want to insert
-        if link[:weight] >= alink[:weight]
+        if alink[:ref_id] == node.id
           the_link = alink
           break
         end
         prev_link = alink
       end
-      # If this is the head, we are now the head
-      if prev_link.nil?
-        self[:head_id] = link.id
-        link[:next_id] = the_link.id if the_link
-      # Otherwise, just insert us
+      # If we found no link, we'll need to create one
+      if the_link.nil?
+        the_link = Likewise::Node.create :ref_id => node.id, :weight => 1
+        prev_link = nil
       else
-        prev_link[:next_id] = link.id
-        link[:next_id] = the_link.id if the_link
+        the_link[:weight] += 1
       end
-      # Return the new weight
-      link[:weight]
-    end
-
-    private
-
-    # Remove a given node
-    def delete(node)
-      prev_link = nil
+      # NOTE: if this was doubly linked we could start moving from here instead for a nice boost
+      # Now, given that weight find our where it should be
+      prev_dest = nil
+      the_dest = nil
       each_link do |alink|
-        if alink[:ref_id] == node.id
-          if prev_link.nil?
-            self[:head_id] = alink[:next_id]
-          else
-            prev_link[:next_id] = alink[:next_id]
-          end
-          return alink # found it
+        if the_link[:weight] >= alink[:weight]
+          the_dest = alink
+          break
         end
-        prev_link = alink
+        prev_dest = alink
       end
-      nil # not found
+      # If its in the wrong place, time to move it
+      unless the_dest == the_link
+        # And then we can remove it from where it was
+        if prev_link.nil?
+          self[:head_id] = the_link[:next_id]
+        else
+          prev_link[:next_id] = the_link[:next_id]
+        end
+        # And put it in its new home
+        if prev_dest.nil?
+          self[:head_id] = the_link.id  
+          the_link[:next_id] = the_dest ? the_dest.id : nil
+        else
+          prev_dest[:next_id] = the_link.id
+          the_link[:next_id] = the_dest ? the_dest.id : nil
+        end
+      end
+      # Return the weight
+      the_link[:weight]
     end
 
   end
