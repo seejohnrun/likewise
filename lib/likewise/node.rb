@@ -4,21 +4,32 @@ module Likewise
 
   class Node
 
-    def self.find(id)
-      if data = Likewise::get(id)
-        node = new(data)
-        node.instance_variable_set(:@id, id)
-        node.send(:persisted!)
-        node
+    class << self
+
+      def find_or_create(data)
+        raise 'no id' unless data[:id]
+        find(data[:id]) || create(data)
       end
-    end
-    
-    def self.create(data = {})
-      node = new(data)
-      node.save
+
+      def find(id)
+        if data = Likewise::get(id)
+          node = new(data)
+          node.instance_variable_set(:@id, id)
+          node.send(:persisted!)
+          node
+        end
+      end
+
+      def create(data = {})
+        node = new(data)
+        node.instance_variable_set(:@id, data.delete(:id)) if data[:id]
+        node.save
+      end
+
     end
 
     attr_reader :id
+    attr_accessor :link
 
     def ==(node)
       node.id == id

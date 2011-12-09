@@ -8,6 +8,7 @@ module Likewise
   class LinkedList < Node
 
     include Collection
+    include MemoizedLength
 
     # Add a link to the end of this structure that references this node
     # Complexity: O(N)
@@ -28,13 +29,7 @@ module Likewise
         last_link[:next_id] = link.id
       end
       # Increment our length, which is memoized
-      self[:length] = (self[:length] || 0) + 1
-    end
-
-    # Compute the length by moving through the list
-    # Complexity: O(1)
-    def length
-      self[:length] || 0
+      element_added!
     end
 
     # Convert the list into an Array

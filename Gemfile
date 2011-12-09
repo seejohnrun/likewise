@@ -1,0 +1,3 @@
+gemspec
+
+gem 'sinatra'

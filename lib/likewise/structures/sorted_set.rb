@@ -5,11 +5,14 @@ module Likewise
   # 
   # Order will be constantly maintained as elements are inserted
   # in an ascending manner.
+  #
+  # On this SortedSet, length is memoized
+  # On this SortedSet, total weight is memoized
   class SortedSet < Node
 
     include Collection
-
-    # TODO memoize length and weight
+    include MemoizedLength
+    include MemoizedTotalWeight
 
     # All a member to the collection
     # If it is already in, increment its weight 
@@ -29,6 +32,7 @@ module Likewise
       if the_link.nil?
         the_link = Likewise::Node.create :ref_id => node.id, :weight => 1
         prev_link = nil
+        element_added!
       else
         the_link[:weight] += 1
       end
@@ -46,9 +50,7 @@ module Likewise
       # If its in the wrong place, time to move it
       unless the_dest == the_link
         # And then we can remove it from where it was
-        if prev_link.nil?
-          self[:head_id] = the_link[:next_id]
-        else
+        if prev_link
           prev_link[:next_id] = the_link[:next_id]
         end
         # And put it in its new home
@@ -61,6 +63,7 @@ module Likewise
         end
       end
       # Return the weight
+      element_incremented!
       the_link[:weight]
     end
 

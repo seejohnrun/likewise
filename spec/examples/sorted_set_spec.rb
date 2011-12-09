@@ -57,4 +57,43 @@ describe Likewise::SortedSet do
     list.first.should == node
   end
 
+  it 'should record incremented weight' do
+    list = Likewise::SortedSet.new
+    node = Likewise::Node.create
+    list.increment node
+    list.top[:weight].should == 1
+    list.increment node
+    list.top[:weight].should == 2
+  end
+
+=begin
+  it 'should let one thing gain on another' do
+    list = Likewise::SortedSet.new
+    node1 = Likewise::Node.create
+    node2 = Likewise::Node.create
+    5.times { puts list.increment(node1) }
+    7.times { puts list.increment(node2) }
+    list.top[:weight].should == 7
+    list.first.should == node2
+  end
+=end
+
+  it 'should keep the link structure intact across many writes' do
+    list = Likewise::SortedSet.new
+    10.times { list.increment(Likewise::Node.create) }
+    count = 0
+    list.send(:each_link) { |l| count += 1 }
+    count.should == 10
+  end
+
+  it 'should be okay with getting smaller increments later' do
+    list = Likewise::SortedSet.new
+    node1 = Likewise::Node.create
+    list.increment node1
+    list.increment node1
+    node2 = Likewise::Node.create
+    list.increment node2
+    list.to_a.should == [node1, node2]
+  end
+
 end

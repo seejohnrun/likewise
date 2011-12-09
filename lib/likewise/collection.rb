@@ -7,6 +7,12 @@ module Likewise
       length == 0
     end
 
+    # Return the link for a given node
+    def link_for(node)
+      each_link { |link| return link if link[:ref_id] == node.id }
+      nil
+    end
+
     # A base, iterating approach to length
     # Complexity: O(N)
     def length
@@ -16,11 +22,16 @@ module Likewise
     end
 
     # Get the first element of the Collection
-    def first
-      if self[:head_id]
-        link = Likewise::Node.find(self[:head_id])
-        Likewise::Node.find(link[:ref_id])
+    def first(n = nil)
+      res = []
+      i = 0
+      each_link do |link|
+        node = Likewise::Node.find(link[:ref_id])
+        node.link = link
+        res << node
+        break if n.nil? || (i += 1) >= n
       end
+      n.nil? ? res.first : res
     end
 
     # Convert the list into an Array

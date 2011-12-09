@@ -9,6 +9,8 @@ module Likewise
   # classes we need
   autoload :VERSION, 'likewise/version'
   autoload :Collection, 'likewise/collection'
+  autoload :MemoizedLength, 'likewise/memoized_length'
+  autoload :MemoizedTotalWeight, 'likewise/memoized_total_weight'
   autoload :Node, 'likewise/node'
 
   # stores
