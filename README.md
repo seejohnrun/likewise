@@ -40,3 +40,7 @@ It is the default, and you can explicitly set it with: `Likewise::store = Likewi
 Store your data in Memcache (more preferably Membase).  This really hits at the intended purpose of the library, since we can grow these collections as large as we'd like.
 
 YOu can set it with: `Likewise::store = Likewise::Store::Memcache.new` which will take an optional argument which is a `Dalli` client already connected to the host you'd like.
+
+## Dependencies
+
+* Ruby >= 1.9
