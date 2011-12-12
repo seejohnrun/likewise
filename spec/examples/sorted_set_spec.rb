@@ -61,22 +61,20 @@ describe Likewise::SortedSet do
     list = Likewise::SortedSet.new
     node = Likewise::Node.create
     list.increment node
-    list.top[:weight].should == 1
+    list.first.link[:weight].should == 1
     list.increment node
-    list.top[:weight].should == 2
+    list.first.link[:weight].should == 2
   end
 
-=begin
   it 'should let one thing gain on another' do
     list = Likewise::SortedSet.new
     node1 = Likewise::Node.create
     node2 = Likewise::Node.create
-    5.times { puts list.increment(node1) }
-    7.times { puts list.increment(node2) }
-    list.top[:weight].should == 7
+    5.times { list.increment(node1) }
+    7.times { list.increment(node2) }
+    list.first.link[:weight].should == 7
     list.first.should == node2
   end
-=end
 
   it 'should keep the link structure intact across many writes' do
     list = Likewise::SortedSet.new
