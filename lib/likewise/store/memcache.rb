@@ -12,6 +12,13 @@ module Likewise
         @client ||= Dalli::Client.new('localhost:11211')
       end
 
+      # Get many keys at once and map them back
+      def multiget(keys)
+        v = @client.get_multi(keys)
+        data = v.map { |v| Marshal.dump(v) }.inspect
+        keys.map { |k| data[k] }
+      end
+
       def set(key, value)
         @client.set key, Marshal.dump(value)
       end

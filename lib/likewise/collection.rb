@@ -7,12 +7,6 @@ module Likewise
       length == 0
     end
 
-    # Return the link for a given node
-    def link_for(node)
-      each_link { |link| return link if link[:ref_id] == node.id }
-      nil
-    end
-
     # A base, iterating approach to length
     # Complexity: O(N)
     def length
@@ -22,24 +16,31 @@ module Likewise
     end
 
     # Get the first element of the Collection
-    def first(n = nil)
-      res = []
+    def first(total = nil)
       i = 0
-      each_link do |link|
-        node = Likewise::Node.find(link[:ref_id])
-        node.link = link
-        res << node
-        break if n.nil? || (i += 1) >= n
+      links = []
+      each_link do |n|
+        links << n
+        break if total.nil? || (i += 1) >= total
       end
-      n.nil? ? res.first : res
+      # And now multiget those we want
+      nodes = Likewise::Node.find links.map { |l| l[:ref_id] }
+      nodes.each_with_index { |n, i| n.link = links[i] }
+      # And return
+      total.nil? ? nodes.first : nodes
     end
 
     # Convert the list into an Array
     # Complexity: O(N)
     def to_a
-      arr = []
-      each { |n| arr << n }
-      arr
+      # Grab the links in order
+      links = []
+      each_link { |n| links << n }
+      # And now multiget the nodes
+      nodes = Likewise::Node.find links.map { |l| l[:ref_id] }
+      nodes.each_with_index { |n, i| n.link = links[i] }
+      # And return the nodes
+      nodes
     end
 
     # Yield each of the referenced nodes

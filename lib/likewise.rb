@@ -24,7 +24,7 @@ module Likewise
 
     extend Forwardable
 
-    def_delegators :store, :get, :set, :clear
+    def_delegators :store, :get, :set, :clear, :multiget
 
     attr_writer :store
 

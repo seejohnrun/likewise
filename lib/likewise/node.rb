@@ -11,10 +11,19 @@ module Likewise
         find(data[:id]) || create(data)
       end
 
-      def find(id)
-        if data = Likewise::get(id)
+      def find(ids)
+        if ids.is_a?(Array)
+          datum = Likewise::multiget(ids)
+          ids.map.with_index do |id, idx|
+            node = new(datum[idx])
+            node.instance_variable_set(:@id, id)
+            node.send(:persisted!)
+            node
+          end
+        else
+          data = Likewise::get(ids)
           node = new(data)
-          node.instance_variable_set(:@id, id)
+          node.instance_variable_set(:@id, ids)
           node.send(:persisted!)
           node
         end

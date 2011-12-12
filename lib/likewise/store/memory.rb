@@ -15,6 +15,11 @@ module Likewise
         @hash[key] = value
       end
 
+      # Get multiple keys at once
+      def multiget(keys)
+        keys.map { |k| get(k) }
+      end
+
       # Get a key
       def get(key)
         @hash[key]
