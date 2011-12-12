@@ -14,9 +14,8 @@ module Likewise
 
       # Get many keys at once and map them back
       def multiget(keys)
-        v = @client.get_multi(keys)
-        data = v.map { |v| Marshal.dump(v) }.inspect
-        keys.map { |k| data[k] }
+        data = @client.get_multi(keys)
+        keys.map { |k| Marshal.load data[k] }
       end
 
       def set(key, value)
