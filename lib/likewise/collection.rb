@@ -36,7 +36,8 @@ module Likewise
 
     # Yield each of the referenced nodes
     # Complexity: O(N)
-    def each(&block)
+    def each
+      return to_enum(:each) unless block_given?
       each_link do |link|
         yield Likewise::Node.find link[:ref_id]
       end

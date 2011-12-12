@@ -11,6 +11,10 @@ module Likewise
         find(data[:id]) || create(data)
       end
 
+      def exists?(id)
+        !!Likewise::get(id)
+      end
+
       # Find Nodes
       # @param [Array, String] ids - The id or ids to look up
       # @return [Array, Likewise::Node] nodes - The nodes returned.  Array is ids is Array
@@ -18,14 +22,14 @@ module Likewise
         if ids.is_a?(Array)
           datum = Likewise::multiget(ids)
           ids.map.with_index do |id, idx|
-            node = new(datum[idx])
+            node = from_hash(datum[idx])
             node.instance_variable_set(:@id, id)
             node.send(:persisted!)
             node
           end
         else
           data = Likewise::get(ids)
-          node = new(data)
+          node = from_hash(data)
           node.instance_variable_set(:@id, ids)
           node.send(:persisted!)
           node
@@ -62,8 +66,8 @@ module Likewise
     # Set an attribute on this node
     # TODO change out for #meta
     def []=(key, value)
-      unless @data[key] == value
-        @data[key] = value
+      unless @meta[key] == value
+        @meta[key] = value
         save
       end
     end
@@ -71,7 +75,7 @@ module Likewise
     # Get an attribute on this node
     # TODO change out for #meta
     def [](key)
-      @data[key]
+      @meta[key]
     end
 
     # Whether or not this node is currently persisted
@@ -87,18 +91,30 @@ module Likewise
     # id if it doesn't have one already.
     # @return self
     def save
-      @id ||= UUID.new.generate
-      Likewise::set(@id, @data)
+      Likewise::set(@id, to_hash)
       persisted!
       self
     end
 
     # Initialize a new Node with the given data set
-    def initialize(data = {})
-      @data = data
+    def initialize(meta = {})
+      @id ||= UUID.new.generate
+      @meta = meta
     end
 
     private
+
+    def self.from_hash(hash)
+      obj = new
+      obj.instance_variable_set :@meta, hash[:meta]
+      obj
+    end
+
+    def to_hash
+      {
+        :meta => @meta
+      }
+    end
  
     # Mark this node as persisted
     def persisted!

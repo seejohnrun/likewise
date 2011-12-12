@@ -32,14 +32,6 @@ module Likewise
       element_added!
     end
 
-    # Convert the list into an Array
-    # Complexity: O(N)
-    def to_a
-      arr = []
-      each { |n| arr << n }
-      arr
-    end
-
   end
 
 end
