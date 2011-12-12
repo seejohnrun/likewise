@@ -94,4 +94,15 @@ describe Likewise::SortedSet do
     list.to_a.should == [node1, node2]
   end
 
+  it 'should let things rearrange order backwards' do
+    set = Likewise::SortedSet.new
+    node1 = Likewise::Node.create
+    node2 = Likewise::Node.create
+    2.times { set.increment(node1) }
+    3.times { set.increment(node2) }
+    set.to_a.should == [node2, node1]
+    2.times { set.increment(node1) }
+    set.to_a.should == [node1, node2]
+  end
+
 end
