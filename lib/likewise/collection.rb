@@ -59,7 +59,7 @@ module Likewise
     # @return The nodes, with links in the #link attributes of each
     def links_to_nodes(links)
       nodes = Likewise::Node.find links.map { |l| l[:ref_id] }
-      nodes.each_with_index { |n, idx| n.link = links[idx] }
+      nodes.each_with_index { |n, idx| n.context = links[idx] }
       nodes
     end
 

@@ -47,7 +47,7 @@ module Likewise
     attr_reader :id
 
     # The link for the given context of this node
-    attr_accessor :link
+    attr_accessor :context
 
     # Equality is based on node IDs
     def ==(node)

@@ -20,10 +20,10 @@ get '/:type/:value/:relation' do
       :total_weight => set.total_weight,
       :top => nodes.map { |node| {
         :name => node[:name],
-        :weight => node.link[:weight],
+        :weight => node.context[:weight],
         :total => node[:weight],
-        :pct_of_set => node.link[:weight] / set.total_weight.to_f,
-        :pct_of_item => node.link[:weight] / node[:weight].to_f
+        :pct_of_set => node.context[:weight] / set.total_weight.to_f,
+        :pct_of_item => node.context[:weight] / node[:weight].to_f
       } }
     }.to_json
   else
