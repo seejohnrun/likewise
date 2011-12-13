@@ -6,6 +6,15 @@ module Likewise
 
     class << self
 
+      def find_by_id(id)
+        if data = Likewise::get(id)
+          node = from_hash(data)
+          node.instance_variable_set(:@id, id)
+          node.send(:persisted!)
+          node
+        end
+      end
+
       def find_or_create(data)
         raise 'no id' unless data[:id]
         find(data[:id]) || create(data)

@@ -6,6 +6,7 @@ module Likewise
   autoload :LinkedList, 'likewise/structures/linked_list'
   autoload :SortedSet, 'likewise/structures/sorted_set'
   autoload :HashSet, 'likewise/structures/hash_set'
+  autoload :WeightedHashSet, 'likewise/structures/weighted_hash_set'
 
   # classes we need
   autoload :VERSION, 'likewise/version'
