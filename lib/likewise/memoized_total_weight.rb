@@ -8,8 +8,8 @@ module Likewise
 
     private
 
-    def element_incremented!
-      self[:total_weight] = total_weight + 1
+    def element_incremented!(by = 1)
+      self[:total_weight] = total_weight + by
     end
 
   end

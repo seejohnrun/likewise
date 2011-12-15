@@ -14,9 +14,15 @@ module Likewise
     include MemoizedLength
     include MemoizedTotalWeight
 
+    def increment(node)
+      increment_by node, 1
+    end
+
+    private
+
     # All a member to the collection
     # If it is already in, increment its weight 
-    def increment(node)
+    def increment_by(node, by)
       raise 'Node must be persisted!' unless node.persisted?
       # first find out where it is
       prev_link = nil
@@ -30,11 +36,11 @@ module Likewise
       end
       # If we found no link, we'll need to create one
       if the_link.nil?
-        the_link = Likewise::Node.create :ref_id => node.id, :weight => 1
+        the_link = Likewise::Node.create :ref_id => node.id, :weight => by
         prev_link = nil
         element_added!
       else
-        the_link[:weight] += 1
+        the_link[:weight] += by
       end
       # NOTE: if this was doubly linked we could start moving from here instead for a nice boost
       # Now, given that weight find our where it should be
@@ -63,7 +69,7 @@ module Likewise
         end
       end
       # Return the weight
-      element_incremented!
+      element_incremented!(by)
       the_link[:weight]
     end
 
