@@ -32,6 +32,35 @@ module Likewise
       element_added!
     end
 
+    # Remove a node's link from this list (may remove multiple)
+    # Complexity: O(N)
+    # @param [Likewise::Node] node - the node to be removed
+    # @return [Likewise::Node] the node, if removed, nil otherwise
+    def remove(node)
+      # Traverse looking for the node
+      sets = []
+      prev_link = nil
+      each_link do |link|
+        if link[:ref_id] == node.id
+          sets << [prev_link, link]
+          next # in case adjacent of same node
+        end
+        prev_link = link
+      end
+      # Now we can just do the join and we're out
+      sets.each do |prev_link, the_link|
+        if prev_link
+          prev_link[:next_id] = the_link[:next_id]
+        else
+          self[:head_id] = the_link[:next_id]
+        end
+        # Mark removal
+        element_removed!
+      end
+      # Return the node if any were removed
+      node unless sets.empty?
+    end
+
   end
 
 end

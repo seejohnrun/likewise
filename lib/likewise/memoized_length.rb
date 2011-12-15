@@ -8,6 +8,10 @@ module Likewise
 
     private
 
+    def element_removed!
+      self[:length] = length - 1
+    end
+
     def element_added!
       self[:length] = length + 1
     end
