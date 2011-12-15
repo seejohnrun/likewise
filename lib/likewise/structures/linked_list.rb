@@ -43,7 +43,7 @@ module Likewise
       each_link do |link|
         if link[:ref_id] == node.id
           sets << [prev_link, link]
-          next # in case adjacent of same node
+          next # in case adjacent removal node links
         end
         prev_link = link
       end
