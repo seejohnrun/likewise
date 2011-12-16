@@ -14,6 +14,19 @@ module Likewise
     include MemoizedLength
     include MemoizedTotalWeight
 
+    # Remove the given node
+    # @param [Likewise::Node] node - the node to remove
+    # @return [Likewise::Node] the removed node (with context), or nil
+    def remove(node)
+      if link = Likewise::Link.find_by_id(key_for(node))
+        remove_link(link)
+        element_removed!
+        element_decremented!(link[:weight])
+      end
+      node.context = link
+      node
+    end
+
     # Set the weight of a given node
     # @param [Likewise::Node] node - the node to set
     # @param [Fixnum] weight - the weight to set

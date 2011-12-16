@@ -235,4 +235,37 @@ describe Likewise::SortedSet do
 
   end
 
+  describe :remove do
+
+    it 'should remove the node' do
+      set = Likewise::SortedSet.new
+      set.increment (node = Likewise::Node.create)
+      set.remove node
+      set.to_a.should == []
+    end
+
+    it 'should return the node (with context)' do
+      set = Likewise::SortedSet.new
+      set.increment (node = Likewise::Node.create)
+      ret = set.remove(node)
+      ret.should == node
+      ret.context.should_not be_nil
+    end
+
+    it 'should decrease the memoized length' do
+      set = Likewise::SortedSet.new
+      ret = set.increment (node = Likewise::Node.create)
+      set.remove node
+      set.length.should == 0
+    end
+
+    it 'should decrease the memoized total weight' do
+      set = Likewise::SortedSet.new
+      ret = set.increment (node = Likewise::Node.create)
+      set.remove node
+      set.total_weight.should == 0
+    end
+
+  end
+
 end

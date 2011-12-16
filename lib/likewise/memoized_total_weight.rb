@@ -12,6 +12,10 @@ module Likewise
       self[:total_weight] = total_weight + by
     end
 
+    def element_decremented!(by = 1)
+      self[:total_weight] = total_weight - by
+    end
+
   end
 
 end
