@@ -64,12 +64,14 @@ module Likewise
 
     # Equality is based on node IDs
     def ==(node)
-      node.id == id
+      if node
+        node.id == id
+      end
     end
 
     # Hash implemented for equality operation is based on IDs
     def hash
-      node.id.hash
+      id.hash
     end
    
     # Set an attribute on this node

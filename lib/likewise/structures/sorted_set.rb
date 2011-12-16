@@ -14,8 +14,36 @@ module Likewise
     include MemoizedLength
     include MemoizedTotalWeight
 
+    # Increment a node by 1
+    # @param [Likewise::Node] node - The Node to increment
+    # @return [Fixnum] The resultant weight
     def increment(node)
       change_by node, 1
+    end
+
+    # Increment a node by a given value
+    # @param [Likewise::Node] node - The node to increment
+    # @param [Fixnum] weight - The amount to increment by
+    # @return [Fixnum] The resultant weight
+    def increment_by(node, weight)
+      raise ArgumentError.new('please use #decrement_by') if weight < 0
+      change_by node, weight
+    end
+
+    # Decrement a node by 1
+    # @param [Likewise::Node] node - The Node to decrement
+    # @return [Fixnum] The resultant weight
+    def decrement(node)
+      change_by node, -1
+    end
+
+    # Decrement a node by a given value
+    # @param [Likewise::Node] node - The node to decrement
+    # @param [Fixnum] weight - The amount to decrement by
+    # @return [Fixnum] The resultant weight
+    def decrement_by(node, weight)
+      raise ArgumentError.new('please use #increment_by') if weight < 0
+      change_by node, -weight
     end
 
     private
@@ -28,6 +56,7 @@ module Likewise
 
     # All a member to the collection
     # If it is already in, increment its weight 
+    # TODO if it doesn't need to move, don't move it
     def change_by(node, by)
       raise 'Node must be persisted!' unless node.persisted?
       # first find out where it is
@@ -38,9 +67,10 @@ module Likewise
           :id => key_for(node)
         element_added!
       else
-        the_link[:weight] += by
+        the_link[:weight] += by 
       end
-      # NOTE: if this was doubly linked we could start moving from here instead for a nice boost
+      # Remove the link
+      remove_link the_link
       # Now, given that weight find our where it should be
       the_dest = nil
       last_link = nil
@@ -51,13 +81,8 @@ module Likewise
         end
         last_link = alink
       end
-      # If its in the wrong place, time to move it
-      unless the_dest == the_link
-        # Remove the link from where it was
-        # And put it in its new home
-        remove_link the_link
-        place_link the_link, the_dest, last_link
-      end
+      # And put it in its new home
+      place_link the_link, the_dest, last_link
       # Return the weight
       element_incremented!(by)
       the_link[:weight]
@@ -98,6 +123,10 @@ module Likewise
     # Remove a given link entirely
     # The link MUST exist in the set
     def remove_link(link)
+      # If the_link is head, set head to nil
+      if self[:head_id] == link.id
+        self[:head_id] = link.next_id
+      end
       if link.prev
         # If things on both sides, link them
         if link.next
@@ -118,11 +147,7 @@ module Likewise
         # It none on either side, do nothing
         else
         end
-        # If the_link is head, set head to nil
-        if self[:head_id] == link.id
-          self[:head_id] = nil
-        end
-      end
+     end
     end
 
   end
