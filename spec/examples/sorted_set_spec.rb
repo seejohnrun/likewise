@@ -201,4 +201,38 @@ describe Likewise::SortedSet do
 
   end
 
+  describe :set do
+
+    it 'should return the weight' do
+      set = Likewise::SortedSet.new
+      set.set(Likewise::Node.create, 2).should == 2
+    end
+
+    it 'should be able to set multiple and query them in order' do
+      set = Likewise::SortedSet.new
+      set.set (node1 = Likewise::Node.create), 2
+      set.set (node2 = Likewise::Node.create), 4
+      set.to_a.should == [node2, node1]
+    end
+
+    it 'should affect local weight' do
+      set = Likewise::SortedSet.new
+      set.set (node1 = Likewise::Node.create), 2
+      set.first.context[:weight].should == 2
+    end
+
+    it 'should affect total weight' do
+      set = Likewise::SortedSet.new
+      set.set (node1 = Likewise::Node.create), 2
+      set.total_weight.should == 2
+    end
+
+    it 'should affect length' do
+      set = Likewise::SortedSet.new
+      set.set (node1 = Likewise::Node.create), 2
+      set.length.should == 1
+    end
+
+  end
+
 end

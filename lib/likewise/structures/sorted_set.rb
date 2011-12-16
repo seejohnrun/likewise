@@ -14,6 +14,14 @@ module Likewise
     include MemoizedLength
     include MemoizedTotalWeight
 
+    # Set the weight of a given node
+    # @param [Likewise::Node] node - the node to set
+    # @param [Fixnum] weight - the weight to set
+    # @return [Fixnum] The resultant weight
+    def set(node, weight)
+      change_by node, nil, weight
+    end
+
     # Increment a node by 1
     # @param [Likewise::Node] node - The Node to increment
     # @return [Fixnum] The resultant weight
@@ -57,17 +65,23 @@ module Likewise
     # All a member to the collection
     # If it is already in, increment its weight 
     # TODO if it doesn't need to move, don't move it
-    def change_by(node, by)
+    # @param [Likewise::Node] node - the Node the change
+    # @param [Fixnum] by - the amount to change by (may be negative, or nil if set is provided)
+    # @param [Fixnum] set - the amount to change to (may be negative, or nil if by is provided)
+    # @return [Fixnum] the resultant weight
+    def change_by(node, by, set = nil)
       raise 'Node must be persisted!' unless node.persisted?
       # first find out where it is
       the_link = Likewise::Link.find_by_id key_for(node)
+      # Allow set to work
+      by = the_link.nil? ? set : set - the_link[:weight] if set
       # If we found no link, we'll need to create one
       if the_link.nil?
         the_link = Likewise::Link.create :ref_id => node.id, :weight => by,
           :id => key_for(node)
         element_added!
       else
-        the_link[:weight] += by 
+        the_link[:weight] += by
       end
       # Remove the link
       remove_link the_link
