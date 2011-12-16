@@ -69,7 +69,7 @@ module Likewise
     def each_link
       return to_enum(:each_link) unless block_given?
       next_id = self[:head_id]
-      while next_id && node = Likewise::Node.find(next_id)
+      while next_id && node = Likewise::Link.find(next_id)
         yield node
         next_id = node[:next_id]
       end

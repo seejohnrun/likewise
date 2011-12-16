@@ -14,6 +14,7 @@ module Likewise
   autoload :MemoizedLength, 'likewise/memoized_length'
   autoload :MemoizedTotalWeight, 'likewise/memoized_total_weight'
   autoload :Node, 'likewise/node'
+  autoload :Link, 'likewise/link'
 
   # stores
   module Store
